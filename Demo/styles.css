@@ -1,0 +1,127 @@
+@font-face {
+    font-family: 'DMSans';
+    src: url('./DMSans-VariableFont_opsz\,wght.ttf') format('truetype');
+    /* You can include additional font formats (e.g., woff, woff2) for better compatibility */
+  }
+@font-face {
+    font-family: 'DMMono';
+    src: url('./DMMono-Regular.ttf') format('truetype');
+    /* You can include additional font formats (e.g., woff, woff2) for better compatibility */
+  }
+
+body{
+    background-color:#f1f7ff;
+}
+
+#taskbar {
+    display: flex;
+    background-color: rgb(222, 244, 254);
+    justify-content: space-between;
+    align-items: center;
+    border-bottom:#123693 2px solid;
+    /* ... */
+}
+p{
+    font-family: 'DMSans', sans-serif;
+    color:#123693;
+}
+button {
+    font-family: 'DMMono', sans-serif;
+    padding: 10px 15px;
+    margin-bottom:25px;
+    font-size: 12px;
+    cursor: pointer;
+    background-color: #123693;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+
+button:hover {
+    background-color: #1565c0;
+}
+
+#draggable-window {
+   
+    width: 600px;
+    height: 700px;
+    position: absolute;
+    top: 60px;
+    right: 250px;
+    background-color: rgb(212, 240, 253);
+    border:#123693 2px solid;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.4);
+    cursor: move;
+}
+
+/* Existing CSS for neurons and connections */
+.neuron {
+    stroke: #000;
+    stroke-width: 2;
+}
+
+
+.connection {
+    stroke: #000;
+    stroke-width: 1.5;
+}
+
+/* :root {
+    --red: hsl(0, 100%, 50%);
+    --blue: hsl(240, 100%, 50%);
+    --yellow: hsl(60, 100%, 50%);
+} */
+
+.neuron {
+    stroke: #000;
+    stroke-width: 2;
+}
+
+.connection {
+    stroke: #000;
+    stroke-width: 1.5;
+}
+#parabola-window {
+    width: 700px;
+    height: 700px;
+    /* ... other styles (similar to #neural-network-container) ... */
+}
+
+#expandText { 
+    font-weight:150;
+    letter-spacing: 0.3em;
+    transition: letter-spacing 0.3s ease; /* Add this line for the transition effect */
+    cursor: pointer;
+}
+
+#expandText:hover { 
+    letter-spacing: 0.7em; /* Add this line to specify the new letter-spacing on hover */
+}
+
+#neural-network-container {
+    position: relative;
+}
+
+#training-status {
+    font-family:"DMMono";
+    position: absolute;
+    top: 0;
+    left:70%;
+    padding: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    color:#123693;
+}
+
+#epoch {
+    font-family:"DMMono";
+    position: absolute;
+    top: 20px;
+    left:70%;
+    padding: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    color:#123693;
+}

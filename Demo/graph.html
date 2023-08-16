@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Updating Scatter Plot Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div style="height:400px; width:400px;";>
+        <p>Graph:</p>
+        <canvas id="myChart" width="400" height="200"></canvas>
+        </div>
+        <script>
+            // Initial random data for the scatter plot
+            var scatterData = [];
+            for (var i = 0; i < 20; i++) {
+                scatterData.push({
+                    x: Math.random() * 100,
+                    y: Math.random() * 100
+                });
+            }
+            
+            // Initial radius
+            var radius = 1;
+    
+            // Function to generate data points for the circle
+            function generateCircleData(radius) {
+                var dataPoints = [];
+                for (var theta = 0; theta < Math.PI * 2; theta += 0.01) {
+                    var x = radius * Math.cos(theta) + 50;
+                    var y = radius * Math.sin(theta) + 50;
+                    dataPoints.push({ x: x, y: y });
+                }
+                return dataPoints;
+            }
+    
+            // Get the context of the canvas element we want to select
+            var ctx = document.getElementById('myChart').getContext('2d');
+    
+            // Create new Chart object
+            var myChart = new Chart(ctx, {
+                type: 'scatter',  // specify the chart type
+                data: {
+                    datasets: [
+                        {
+                            label: 'Random Data',  // Name the scatter plot series
+                            data: scatterData,  // Insert initial random data here
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Color of the dots
+                            borderColor: 'rgba(75, 192, 192, 1)',  // Border color of the dots
+                            pointRadius: 5
+                        },
+                        {
+                            label: 'Circle',  // Name the circle series
+                            data: generateCircleData(radius),  // Generate initial circle data points
+                            fill: false,
+                            borderColor: 'rgba(75, 192, 192, 1)',  // Line color of the circle
+                            pointRadius: 0,
+                            showLine: true  // Enable line to form the circle
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            min: 0,
+                            max: 100
+                        },
+                        y: {
+                            min: 0,
+                            max: 100
+                        }
+                    }
+                }
+            });
+    
+            // Function to increase the radius and update the chart
+            function increaseRadius() {
+                radius += 1;
+                myChart.data.datasets[1].data = generateCircleData(radius);
+                myChart.update();
+            }
+    
+            // Set interval to increase the radius every 1000 milliseconds (1 second)
+            setInterval(increaseRadius, 1000);
+        </script>
+</body>
+</html>
+
+
