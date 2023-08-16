@@ -1,0 +1,7 @@
+#pixelCanvas {
+    width: 560px;
+    height: 560px;
+    border: 1px solid #000;
+    image-rendering: pixelated; /* Keeps pixels sharp */
+  }
+  

@@ -161,3 +161,143 @@ window.addEventListener('mousemove', (e) => {
         draggableWindow.style.top = (e.clientY - offsetY) + 'px';
     }
 });
+
+
+
+const draggableWindow2 = document.getElementById('draggable-window2');
+const canvas = document.getElementById('pixelCanvas');
+const ctx = canvas.getContext('2d');
+let isDragging2 = false;
+let drawing = false;
+let offsetX2, offsetY2;
+
+draggableWindow2.addEventListener('mousedown', (e) => {
+    isDragging2 = true;
+    e.preventDefault();
+    offsetX2 = e.clientX - draggableWindow2.getBoundingClientRect().left;
+    offsetY2 = e.clientY - draggableWindow2.getBoundingClientRect().top;
+});
+
+window.addEventListener('mouseup', () => {
+    isDragging2 = false;
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (isDragging2) {
+        // Check if the cursor is not over the pixelCanvas
+        if (e.target !== canvas) {
+            draggableWindow2.style.left = (e.clientX - offsetX2) + 'px';
+            draggableWindow2.style.top = (e.clientY - offsetY2) + 'px';
+        }
+    }
+});
+
+
+const draggableWindow3 = document.getElementById('draggable-window3');
+let isDragging3 = false;
+let offsetX3, offsetY3;
+
+draggableWindow3.addEventListener('mousedown', (e) => {
+    isDragging3 = true;
+    e.preventDefault();
+    offsetX3 = e.clientX - draggableWindow3.getBoundingClientRect().left;
+    offsetY3 = e.clientY - draggableWindow3.getBoundingClientRect().top;
+});
+
+window.addEventListener('mouseup', () => {
+    isDragging3 = false;
+});
+
+window.addEventListener('mousemove', (e) => {
+    if (isDragging3) {
+        draggableWindow3.style.left = (e.clientX - offsetX3) + 'px';
+        draggableWindow3.style.top = (e.clientY - offsetY3) + 'px';
+    }
+});
+
+
+
+
+canvas.addEventListener('mousedown', startDrawing);
+canvas.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('mousemove', draw);
+
+
+
+
+
+function startDrawing(e) {
+    drawing = true;
+    draw(e); // To allow a single click to paint a pixel
+  }
+  
+  function stopDrawing() {
+    drawing = false;
+    ctx.beginPath(); // Ensures the next line drawn is independent from the last
+  }
+  
+  function draw(e) {
+    if (!drawing) return;
+  
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+  
+    // Calculate rounded coordinates
+    const roundedX = Math.floor(x);
+    const roundedY = Math.floor(y);
+  
+    // Draw at the exact position with full opacity
+    drawPixel(roundedX, roundedY, 1);
+  
+    // Draw at top, left, right, and bottom positions with 50% opacity
+    drawPixel(roundedX, roundedY - 1, 0.5); // Top
+    drawPixel(roundedX, roundedY + 1, 0.5); // Bottom
+    drawPixel(roundedX - 1, roundedY, 0.5); // Left
+    drawPixel(roundedX + 1, roundedY, 0.5); // Right
+  }
+  
+  
+  // Helper function to draw a black rectangle (pixel)
+  function drawPixel(x, y, alpha = 1) {
+    if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+      ctx.globalAlpha = alpha; // Set the alpha (opacity)
+      ctx.fillStyle = 'black';
+      ctx.fillRect(x, y, 1, 1);
+      ctx.globalAlpha = 1; // Reset alpha to default
+    }
+  }
+
+// const logButton = document.getElementById('logButton');
+// logButton.addEventListener('click', logCanvasData);
+// function logCanvasData() {
+//     const pixelData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+//     let grid = [];
+  
+//     for (let y = 0; y < canvas.height; y++) {
+//       let row = [];
+      
+//       for (let x = 0; x < canvas.width; x++) {
+//         // Calculate the index into the pixelData array
+//         const idx = (y * canvas.width + x) * 4;
+        
+//         // Get the alpha component of the pixel
+//         const alpha = pixelData[idx + 3];
+        
+//         // Add the alpha value to the row
+//         row.push(alpha);
+//       }
+      
+//       // Add the row to the grid
+//       grid.push(row);
+//     }
+    
+//     // Log the grid to the console
+//     console.log(grid);
+//   }
+  
+  
+  
+  

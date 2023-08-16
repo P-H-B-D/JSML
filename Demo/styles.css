@@ -21,6 +21,23 @@ body{
     border-bottom:#123693 2px solid;
     /* ... */
 }
+
+#taskbar2 {
+    display: flex;
+    background-color: rgb(222, 244, 254);
+    justify-content: space-between;
+    align-items: center;
+    border-bottom:#123693 2px solid;
+    /* ... */
+}
+#taskbar3 {
+    display: flex;
+    background-color: rgb(222, 244, 254);
+    justify-content: space-between;
+    align-items: center;
+    border-bottom:#123693 2px solid;
+    /* ... */
+}
 p{
     font-family: 'DMSans', sans-serif;
     color:#123693;
@@ -55,6 +72,42 @@ button:hover {
     box-shadow: 0 0px 10px rgba(0, 0, 0, 0.4);
     cursor: move;
 }
+
+#draggable-window2 {
+   
+    width: 365px;
+    height: 420px;
+    position: absolute;
+    top: 60px;
+    left: 450px;
+    background-color: rgb(212, 240, 253);
+    border:#123693 2px solid;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.4);
+    cursor: move;
+}
+#draggable-window3 {
+   
+    width: 200px;
+    height: 140px;
+    position: absolute;
+    top: 600px;
+    left: 450px;
+    background-color: rgb(212, 240, 253);
+    border:#123693 2px solid;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.4);
+    cursor: move;
+}
+
+#pixelCanvas {
+    background-color: #f1f7ff;
+    margin-left:20px;
+    margin-top:20px;
+    width: 320px;
+    height: 320px;
+    border: 1px solid #000;
+    image-rendering: pixelated; /* Keeps pixels sharp */
+    cursor: crosshair;
+  }
 
 /* Existing CSS for neurons and connections */
 .neuron {
@@ -125,3 +178,5 @@ button:hover {
     font-weight: bold;
     color:#123693;
 }
+
+  
