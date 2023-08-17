@@ -190,19 +190,55 @@ class MLP {
             param.zeroGrad();
         }
     }
+    softmax(outputs) {
+        const expValues = outputs.map(val => Math.exp(val.val));
+        const sumExp = expValues.reduce((sum, expVal) => sum + expVal, 0);
+        const softmaxProbs = expValues.map(expVal => new Val(expVal / sumExp));
+        return softmaxProbs;
+    }
+    softmaxCrossEntropyWithLogits(logits, labels) {
+        const expValues = logits.map(val => Math.exp(val.val));
+        const sumExp = expValues.reduce((sum, expVal) => sum + expVal, 0);
+        const softmaxProbs = expValues.map(expVal => new Val(expVal / sumExp));
+
+        let loss = new Val(0.0);
+        for (let i = 0; i < softmaxProbs.length; i++) {
+            loss = loss.add(new Val(-labels[i] * Math.log(softmaxProbs[i].val)));
+        }
+
+        const backward = () => {
+            for (let i = 0; i < logits.length; i++) {
+                logits[i].grad += (softmaxProbs[i].val - labels[i]);
+            }
+        }
+        
+        loss.backward = backward;
+        return loss;
+    }
 }
 
 function trainModel(net, x, y, stepSize, epochs) {
+    const numDataPoints = x.length;
+    
     for (let epoch = 0; epoch < epochs; epoch++) {
+        // Randomly shuffle the data order for this epoch
+        const shuffledIndices = Array.from({ length: numDataPoints }, (_, i) => i);
+        for (let i = shuffledIndices.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
+        }
+
         let loss = new Val(0.0);
 
         // Zero out the gradients before each backpropagation run
         net.zeroGrads();
 
-        for (let i = 0; i < x.length; i++) {
-            let row = x[i];
-            let pred = net.forward(row);
-            let error = pred[0].add(new Val(-y[i]));
+        for (let i = 0; i < numDataPoints; i++) {
+            const dataIndex = shuffledIndices[i];
+            const row = x[dataIndex];
+            const target = y[dataIndex];
+            const pred = net.forward(row);
+            const error = pred[0].add(new Val(-target));
             loss = loss.add(error.multiply(error));
         }
 
@@ -216,35 +252,79 @@ function trainModel(net, x, y, stepSize, epochs) {
     }
 }
 
+function trainModelSoftmax(net, x, y, stepSize, epochs) {
+    for (let epoch = 0; epoch < epochs; epoch++) {
+        let totalLoss = new Val(0.0);
+
+        // Zero out the gradients before each backpropagation run
+        net.zeroGrads();
+
+        for (let i = 0; i < x.length; i++) {
+            let row = x[i];
+            let logits = net.forward(row);
+            
+            let target = new Array(net.layers[net.layers.length - 1].neurons.length).fill(0);
+            target[y[i]] = 1;
+
+            let loss = net.softmaxCrossEntropyWithLogits(logits, target);
+            loss.backpropagate();
+
+            totalLoss = totalLoss.add(loss);
+        }
+
+        // Update parameters using gradients
+        for (let param of net.parameters()) {
+            param.val -= stepSize * param.grad;
+        }
+
+        console.log("Epoch:", epoch + 1, " Loss:", totalLoss.val);
+    }
+}
+
+
+
 function printPredictions(net, x, y) {
     for (let i = 0; i < x.length; i++) {
         let row = x[i];
         let pred = net.forward(row);
-        console.log("Prediction:", pred[0].val, "Actual:", y[i]);
+
+        // Calculate softmax probabilities for the prediction
+        let softmaxPred = net.softmax(pred);
+
+        console.log("Input:", row, "Actual:", y[i], "Predicted Probabilities:", softmaxPred.map(prob => prob.val));
     }
 }
 
-// Exporting classes and functions to be accessible in other files
-// export { Val, Neuron, Layer, MLP, trainModel, printPredictions };
-// Generate Sample Data
-x=[[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]];
-y=[0,1,2,3,4,5,6,7,8];
+// Sample data for softmax classification
+const x = [
+    [1, 2, 3, 4], // Input features
+    [2, 3, 4, 5],
+    [3, 4, 5, 6],
+    [4, 5, 6, 7]
+];
+const y = [0, 1, 0, 1]; // Target labels
 
 // Create the MLP
-// let net = new MLP(input_size, hidden_layers, output_size, activations);
-let net = new MLP(4, [5,5], 4, ['tanh','tanh','identity']);
-console.log("Parameters: " + net.parameters().length);
+const inputSize = x[0].length;
+const hiddenLayers = [5, 3]; // Number of neurons in hidden layers
+const outputSize = 3; // Number of classes
+const activations = ['tanh', 'tanh', 'identity']; // Activation functions for layers
+
+const net = new MLP(inputSize, hiddenLayers, outputSize, activations);
 
 // Training Configuration
-const stepSize = 0.005;
-const epochs = 100;
+const stepSize = 0.01;
+const epochs = 50;
 
 // Train the Model
-trainModel(net, x, y, stepSize, epochs);
+trainModelSoftmax(net, x, y, stepSize, epochs);
 
-// Print Predictions
+// Test and print predictions
+console.log("Predictions after training:");
 printPredictions(net, x, y);
 
-// Test Prediction
-let pred = net.forward([9,9]);
-console.log("Train Network:", pred[0].val);
+
+// Test prediction with new data
+const newTestData = [[5, 6, 7, 8]]; // Input size should match the defined inputSize
+const prediction = net.forward(newTestData[0]);
+console.log("Predicted class probabilities:", prediction[0].val);
