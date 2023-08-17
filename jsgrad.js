@@ -51,9 +51,8 @@ class Val {
         out.backward = backward;
         return out;
 
+        
     }
-
-    
 
     backpropagate() {
 
@@ -75,6 +74,9 @@ class Val {
         for (let v of Array.from(nodes)) {
             v.backward();
         }
+    }
+    zeroGrad() {
+        this.grad = 0.0;
     }
 }
 
@@ -183,11 +185,19 @@ class MLP {
         }
         return params;
     }
+    zeroGrads() {
+        for (let param of this.parameters()) {
+            param.zeroGrad();
+        }
+    }
 }
 
 function trainModel(net, x, y, stepSize, epochs) {
     for (let epoch = 0; epoch < epochs; epoch++) {
         let loss = new Val(0.0);
+
+        // Zero out the gradients before each backpropagation run
+        net.zeroGrads();
 
         for (let i = 0; i < x.length; i++) {
             let row = x[i];
@@ -216,3 +226,25 @@ function printPredictions(net, x, y) {
 
 // Exporting classes and functions to be accessible in other files
 // export { Val, Neuron, Layer, MLP, trainModel, printPredictions };
+// Generate Sample Data
+x=[[0,0],[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]];
+y=[0,1,2,3,4,5,6,7,8];
+
+// Create the MLP
+// let net = new MLP(input_size, hidden_layers, output_size, activations);
+let net = new MLP(4, [5,5], 4, ['tanh','tanh','identity']);
+console.log("Parameters: " + net.parameters().length);
+
+// Training Configuration
+const stepSize = 0.005;
+const epochs = 100;
+
+// Train the Model
+trainModel(net, x, y, stepSize, epochs);
+
+// Print Predictions
+printPredictions(net, x, y);
+
+// Test Prediction
+let pred = net.forward([9,9]);
+console.log("Train Network:", pred[0].val);

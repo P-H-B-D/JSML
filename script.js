@@ -10,7 +10,8 @@ function runMLScript() {
     const activations = ['tanh','tanh']; // 'tanh' for hidden layers, 'identity' for output layer
     
     // Create the MLP
-    let net = new MLP(input_size, hidden_layers, output_size, activations);
+    // let net = new MLP(input_size, hidden_layers, output_size, activations);
+    let net = new MLP(2, [5], 2, ['tanh', 'tanh']);
     console.log("Parameters: " + net.parameters().length);
     
     // Training Configuration
