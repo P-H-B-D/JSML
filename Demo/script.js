@@ -270,33 +270,52 @@ function startDrawing(e) {
     }
   }
 
-// const logButton = document.getElementById('logButton');
-// logButton.addEventListener('click', logCanvasData);
-// function logCanvasData() {
-//     const pixelData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-//     let grid = [];
+const logButton = document.getElementById('logButton');
+logButton.addEventListener('click', logCanvasData);
+function logCanvasData() {
+    const pixelData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let grid = [];
   
-//     for (let y = 0; y < canvas.height; y++) {
-//       let row = [];
+    for (let y = 0; y < canvas.height; y++) {
+      let row = [];
       
-//       for (let x = 0; x < canvas.width; x++) {
-//         // Calculate the index into the pixelData array
-//         const idx = (y * canvas.width + x) * 4;
+      for (let x = 0; x < canvas.width; x++) {
+        // Calculate the index into the pixelData array
+        const idx = (y * canvas.width + x) * 4;
         
-//         // Get the alpha component of the pixel
-//         const alpha = pixelData[idx + 3];
+        // Get the alpha component of the pixel
+        const alpha = pixelData[idx + 3];
         
-//         // Add the alpha value to the row
-//         row.push(alpha);
-//       }
+        // Add the alpha value to the row
+        row.push(alpha);
+      }
       
-//       // Add the row to the grid
-//       grid.push(row);
-//     }
+      // Add the row to the grid
+      grid.push(row);
+    }
     
-//     // Log the grid to the console
-//     console.log(grid);
-//   }
+    // Log the grid to the console
+    // console.log(grid);
+
+    // Convert the grid array to a 1D array
+    let input = [];
+    for (let i = 0; i < grid.length; i++) {
+        input = input.concat(grid[i]);
+    }
+    
+    // Convert the input array to a JSON string
+    const jsonString = JSON.stringify(input);
+
+    // Log the JSON string to the console
+    console.log(jsonString);
+    
+
+    //save .json to file
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonString));
+    element.setAttribute('download', 'data.json');
+    
+  }
   
   
   
